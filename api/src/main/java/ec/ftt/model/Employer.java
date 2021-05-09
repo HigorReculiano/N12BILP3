@@ -17,6 +17,8 @@ public class Employer {
 	private String name,
 	               age,
 	               login;
+	private long companyId,
+				 roleId;
 	
 	public Employer() {
 		
@@ -104,7 +106,7 @@ public class Employer {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", age=" + age + ", login=" + login + "]";
+		return "User [id=" + id + ", name=" + name + ", age=" + age + ", login=" + login + ", companyId=" + companyId + ", roleId=" + roleId +"]";
 	}
 
 	@Override
@@ -123,5 +125,17 @@ public class Employer {
 		Employer other = (Employer) obj;
 		return Objects.equals(login, other.login) && Objects.equals(age, other.age) && id == other.id
 				&& Objects.equals(name, other.name);
+	}
+	public long getCompanyId() {
+		return companyId;
+	}
+	public void setCompanyId(long company_id) {
+		this.companyId = company_id;
+	}
+	public long getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(long roleId) {
+		this.roleId = roleId;
 	}
 }

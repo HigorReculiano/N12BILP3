@@ -107,7 +107,27 @@ public class RoleDao {
     	
     } // getRoleById long
     
-    
+    public Role getRoleByDescription(String description) {
+
+    	Role roleOutput = new Role();
+        
+    	try {
+            PreparedStatement preparedStatement = connection.
+                    prepareStatement("SELECT * from role WHERE description=?");
+            
+            preparedStatement.setString(1, description);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (rs.next()) {
+            	roleOutput.setId(rs.getLong("id"));
+            	roleOutput.setDescription(rs.getString("description"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return roleOutput;
+    } //getRoleById
     	
     public Role getRoleById(Role role) {
 
