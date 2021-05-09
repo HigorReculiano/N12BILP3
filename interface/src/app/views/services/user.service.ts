@@ -12,4 +12,10 @@ export class UserService {
                 `http://localhost:8080/api/employer`, employer
             ).toPromise();
     };
+
+    deleteUser = (idUser:number): Promise<any> => {
+        return this.http.delete<any>(
+            `http://localhost:8080/api/employer?id=${idUser}`
+        ).toPromise();
+        };
 }

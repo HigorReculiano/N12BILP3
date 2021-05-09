@@ -10,6 +10,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatTableModule} from '@angular/material/table';
 import {MatSelectModule} from '@angular/material/select';
+import {MatIconModule} from '@angular/material/icon';
 import { HomeComponent } from './views/home/home.component';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -37,7 +38,8 @@ import { CompanyService } from './views/services/company.service';
     MatTableModule,
     MatSelectModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatIconModule
   ],
   providers: [UserService, CompanyService],
   bootstrap: [AppComponent]
