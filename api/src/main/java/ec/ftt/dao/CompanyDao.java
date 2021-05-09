@@ -12,150 +12,155 @@ import ec.ftt.util.DBUtil;
 
 public class CompanyDao {
 
-    private Connection connection;
+	private Connection connection;
 
-    public CompanyDao() {
-        connection = DBUtil.getConnection();
-    } //companyDao
+	public CompanyDao() {
+		connection = DBUtil.getConnection();
+	} // companyDao
 
-    public void addCompany(Company company) {
-    	try {
-    		
-    		System.out.println("Here we are...");
-    		
-            PreparedStatement preparedStatement = connection
-                    .prepareStatement("INSERT INTO company (name, cnpj) VALUES (?, ?)");
-            
-            // Parameters start with 1
-            preparedStatement.setString(1, company.getName());
-            preparedStatement.setString(2, company.getCnpj());
+	public void addCompany(Company company) throws SQLException {
+		System.out.println("Here we are...");
 
-            
-            preparedStatement.executeUpdate();
+		PreparedStatement preparedStatement = connection
+				.prepareStatement("INSERT INTO company (name, cnpj) VALUES (?, ?)");
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    } //addcompany
-    
-    public void deleteCompany(Long id) {
-    	
-    	Company company = new Company();
-    	company.setId(id);
-    	
-    	deleteCompany(company);
-    	
-    } // deletecompany long
+		// Parameters start with 1
+		preparedStatement.setString(1, company.getName());
+		preparedStatement.setString(2, company.getCnpj());
 
-    public void deleteCompany(Company company) {
-        try {
-        	PreparedStatement preparedStatement = connection
-                    .prepareStatement("DELETE FROM company WHERE ID=?");
+		preparedStatement.executeUpdate();
 
-            preparedStatement.setLong(1, company.getId());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    } //deletecompany
+	} // addcompany
 
-    public void updatecompany(Company company) {
-        try {
-            PreparedStatement preparedStatement = connection
-                    .prepareStatement("UPDATE company SET name=?, " 
-                    		                          + "cnpj=?, "
-                                               + "WHERE id=?");
-                 
-            // Parameters start with 1
-            preparedStatement.setString(1, company.getName());
-            preparedStatement.setString(2, company.getCnpj());
-      
-            preparedStatement.setLong(3, company.getId());
-            
-            preparedStatement.executeUpdate();
+	public void deleteCompany(Long id) {
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    } //updatecompany
+		Company company = new Company();
+		company.setId(id);
 
-    public List<Company> getAllCompany() {
-        
-    	List<Company> companyList = new ArrayList<Company>();
-        
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM company");
-            while (rs.next()) {
-                
-            	Company company = new Company();
-                
-            	company.setId(rs.getLong("id"));
-                company.setName(rs.getString("name"));
-                company.setCnpj(rs.getString("cnpj"));
+		deleteCompany(company);
 
-                companyList.add(company);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+	} // deletecompany long
 
-        return companyList;
-    } //getAllcompany
+	public void deleteCompany(Company company) {
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM company WHERE ID=?");
 
-    public Company getCompanyById(Long id) {
-    	
-    	Company company = new Company();
-    	company.setId(id);
-    	
-    	return getCompanyById(company);
-    	
-    } // getCompanyById long
-    
-    
-    	
-    public Company getCompanyById(Company company) {
+			preparedStatement.setLong(1, company.getId());
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	} // deletecompany
 
-    	Company companyOutput = new Company();
-        
-    	try {
-            PreparedStatement preparedStatement = connection.
-                    prepareStatement("SELECT * from company WHERE ID=?");
-            
-            preparedStatement.setLong(1, company.getId());
-            ResultSet rs = preparedStatement.executeQuery();
+	public void updatecompany(Company company) throws SQLException {
 
-            if (rs.next()) {
-            	companyOutput.setId(rs.getLong("id"));
-            	companyOutput.setName(rs.getString("name"));
-            	companyOutput.setCnpj(rs.getString("cnpj"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+		PreparedStatement preparedStatement = connection
+				.prepareStatement("UPDATE company SET name=?, " + "cnpj=? " + "WHERE id=?");
 
-        return companyOutput;
-    } //getCompanyById
-    
-    public String getDbDate() {
+		// Parameters start with 1
+		preparedStatement.setString(1, company.getName());
+		preparedStatement.setString(2, company.getCnpj());
 
-    	String output="";
-    	
-    	try {
-            PreparedStatement preparedStatement = connection.
-                    prepareStatement("SELECT now() NOW");
-            
-            ResultSet rs = preparedStatement.executeQuery();
+		preparedStatement.setLong(3, company.getId());
 
-            if (rs.next()) {
-            	output = rs.getString("NOW");
+		preparedStatement.executeUpdate();
 
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+	} // updatecompany
 
-        return output;
-    } //getDbDate
-    
-} //companyDao
+	public List<Company> getAllCompany() {
+
+		List<Company> companyList = new ArrayList<Company>();
+
+		try {
+			Statement statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("SELECT * FROM company");
+			while (rs.next()) {
+
+				Company company = new Company();
+
+				company.setId(rs.getLong("id"));
+				company.setName(rs.getString("name"));
+				company.setCnpj(rs.getString("cnpj"));
+
+				companyList.add(company);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return companyList;
+	} // getAllcompany
+
+	public Company getCompanyById(Long id) {
+
+		Company company = new Company();
+		company.setId(id);
+
+		return getCompanyById(company);
+
+	} // getCompanyById long
+
+	public Company getCompanyById(Company company) {
+
+		Company companyOutput = new Company();
+
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from company WHERE ID=?");
+
+			preparedStatement.setLong(1, company.getId());
+			ResultSet rs = preparedStatement.executeQuery();
+
+			if (rs.next()) {
+				companyOutput.setId(rs.getLong("id"));
+				companyOutput.setName(rs.getString("name"));
+				companyOutput.setCnpj(rs.getString("cnpj"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return companyOutput;
+	} // getCompanyById
+	public Company getCompanyByName(String name) {
+
+		Company companyOutput = new Company();
+
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from company WHERE name=?");
+
+			preparedStatement.setString(1, name);
+			ResultSet rs = preparedStatement.executeQuery();
+
+			if (rs.next()) {
+				companyOutput.setId(rs.getLong("id"));
+				companyOutput.setName(rs.getString("name"));
+				companyOutput.setCnpj(rs.getString("cnpj"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return companyOutput;
+	} // getCompanyById
+	
+	public String getDbDate() {
+
+		String output = "";
+
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT now() NOW");
+
+			ResultSet rs = preparedStatement.executeQuery();
+
+			if (rs.next()) {
+				output = rs.getString("NOW");
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return output;
+	} // getDbDate
+
+} // companyDao

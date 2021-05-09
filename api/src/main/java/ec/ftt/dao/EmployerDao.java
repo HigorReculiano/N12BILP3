@@ -21,14 +21,13 @@ public class EmployerDao {
     public void addEmployer(Employer employer) throws SQLException {
 
             PreparedStatement preparedStatement = connection
-      .prepareStatement("INSERT INTO employer (name, age, login, company_id, role_id) VALUES (?, ?, ?, ?, ?)");
+      .prepareStatement("INSERT INTO employer (name, age, company_id, role_id) VALUES (?, ?, ?, ?)");
             
             // Parameters start with 1
             preparedStatement.setString(1, employer.getName());
             preparedStatement.setString(2, employer.getAge());
-            preparedStatement.setString(3, employer.getLogin());
-            preparedStatement.setLong(4, employer.getCompanyId());
-            preparedStatement.setLong(5, employer.getRoleId());
+            preparedStatement.setLong(3, employer.getCompanyId());
+            preparedStatement.setLong(4, employer.getRoleId());
             
             preparedStatement.executeUpdate();
 
@@ -59,17 +58,15 @@ public class EmployerDao {
 
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE employer SET NAME=?, " 
-                    		                          + "age=?, " 
-                    		                          + "login=? " 
+                    		                          + "age=? "
                                                + "WHERE ID=?");
                  
             // Parameters start with 1
             preparedStatement.setString(1, employer.getName());
             preparedStatement.setString(2, employer.getAge());
             //preparedStatement.setDate(3, (java.sql.Date)employer.getDob());
-            preparedStatement.setString(3, employer.getLogin());
             
-            preparedStatement.setLong(4, employer.getId());
+            preparedStatement.setLong(3, employer.getId());
             
             preparedStatement.executeUpdate();
 
@@ -90,7 +87,6 @@ public class EmployerDao {
                 employer.setName(rs.getString("NAME"));
                 employer.setAge(rs.getString("age"));
                 //employer.setDob(rs.getDate("DOB"));
-                employer.setLogin(rs.getString("login"));
                 employer.setCompanyId(rs.getLong("company_id"));
                 employer.setRoleId(rs.getLong("role_id"));
 
@@ -130,7 +126,6 @@ public class EmployerDao {
             	employerOutput.setName(rs.getString("NAME"));
             	employerOutput.setAge(rs.getString("age"));
             	//employerOutput.setDob(rs.getDate("DOB"));
-            	employerOutput.setLogin(rs.getString("login"));
             	employerOutput.setCompanyId(rs.getLong("company_id"));
             	employerOutput.setRoleId(rs.getLong("role_id"));
             }

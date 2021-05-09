@@ -1,7 +1,10 @@
 package ec.ftt.api;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,14 +16,17 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import ec.ftt.dao.CompanyDao;
+import ec.ftt.dao.RoleDao;
 import ec.ftt.model.Company;
 import ec.ftt.model.Employer;
+import ec.ftt.model.Company;
+import ec.ftt.model.Company;
 import ec.ftt.util.Errors;
 import ec.ftt.util.Helper;
 import ec.ftt.util.Validator;
 
 /**
- * Servlet implementation class employerApi
+ * Servlet implementation class companyApi
  * 
  * CRUD -
  * 
@@ -28,13 +34,14 @@ import ec.ftt.util.Validator;
 
 // TODO: PROJETO: CRIAR CRUD WEB + GRÁFICO PARA MAIS UMA TABELA COM MAIS CAMPOS PARA N1 2B
 // TODO: PROJETO: PROJETO INDIVIDUAL OU NO MÁXIMO EM DUPLAS (EM DUPLAS 2 TABELAS)
-// TODO: PROJETO: JavaScript Valina - CRUD em uma página - employer "fetch"
+// TODO: PROJETO: JavaScript Valina - CRUD em uma página - company "fetch"
 // TODO: PROJETO: Gerar gráfico com "Chart.js" https://www.chartjs.org/
 // TODO: PROJETO: Trabalhar bem mensagens de erro da WEB API com try catch
 
 @WebServlet("/company")
 public class CompanyApi extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private CompanyDao companyDao;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -42,6 +49,7 @@ public class CompanyApi extends HttpServlet {
 	public CompanyApi() {
 		super();
 		// TODO Auto-generated constructor stub
+		this.companyDao = new CompanyDao();
 	}
 
 	/**
@@ -57,13 +65,26 @@ public class CompanyApi extends HttpServlet {
 	public void destroy() {
 		// TODO Auto-generated method stub
 	}
-
+	
+	
+	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		this.setAccessControlHeaders(response);
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+	
+	protected void setAccessControlHeaders (HttpServletResponse response) {
+		response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
+		response.setHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
+	}
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		this.setAccessControlHeaders(response);
 		CompanyDao companyDao = new CompanyDao();
 		Gson gson = new Gson();
 		String companyId = request.getParameter("id");
@@ -84,13 +105,25 @@ public class CompanyApi extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Employer employer = Helper.getObjectFromJson(request.getReader(), Employer.class);
+		try {
+			this.setAccessControlHeaders(response);
+			Company company = Helper.getObjectFromJson(request.getReader(), Company.class);
+			if (Validator.isEmpty(company.getName()) || Validator.isEmpty(company.getCnpj())) {
+				response = Errors.badRequest(response, "Check if all required fields are correctly filled !");
+				return;
+			}
 
-		if (Validator.isEmpty(employer.getLogin()) || Validator.isEmpty(employer.getName())) {
-			response = Errors.badRequest(response, "Check if all required fields are correctly filled !");
-			return;
+			this.companyDao.addCompany(company);
+			response.setStatus(204);
+		} catch (SQLException e) {
+			if (e instanceof SQLIntegrityConstraintViolationException) {
+				Errors.conflict(response, "unique key login already exists !");
+			}
+			e.printStackTrace();
+		} catch (Exception e) {
+			Errors.serverError(response, e.getMessage());
+			e.printStackTrace();
 		}
-		response.getWriter().append(new Gson().toJson(employer));
 	}
 
 	/**
@@ -98,16 +131,40 @@ public class CompanyApi extends HttpServlet {
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Ajustar errors com try catch
+		try {
+			this.setAccessControlHeaders(response);
+			String companyId = request.getParameter("id");
 
-		String companyId = request.getParameter("id");
+			if (Validator.isEmpty(companyId)) {
+				Errors.badRequest(response, "Company ID can not be empty");
+				return;
+			}
 
-		if (Validator.isEmpty(companyId)) {
-			response = Errors.badRequest(response, "Employer ID can not be empty !");
-		} else {
-			Employer employer = Helper.getObjectFromJson(request.getReader(), Employer.class);
+			long id = Long.valueOf(companyId);
+			Company company = this.companyDao.getCompanyById(id);
+			if (company.getId() == 0) {
+				Errors.notFound(response, "Company with ID: " + companyId + " doesnt exists.");
+				return;
+			}
 
-			response.getWriter().append(new Gson().toJson(employer));
+			Company companyChanges = Helper.getObjectFromJson(request.getReader(), Company.class);
+
+			if (Objects.isNull(companyChanges)) {
+				Errors.badRequest(response, "Company JSON is null");
+				return;
+			}
+
+			Helper.merge(company, companyChanges);
+			this.companyDao.updatecompany(company);
+			response.setStatus(204);
+		} catch (SQLException e) {
+			if (e instanceof SQLIntegrityConstraintViolationException) {
+				Errors.conflict(response, "unique key login already exists !");
+			}
+			e.printStackTrace();
+		} catch (Exception e) {
+			Errors.serverError(response, e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -116,31 +173,20 @@ public class CompanyApi extends HttpServlet {
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// https://www.tutorialspoint.com/servlets/servlets-http-status-codes.htm
-
-		// TODO Verificar se está enviando o parametro
-		// TODO Verificar se o parametro é null
-		// TODO Se o ID já foi apagado
-		// TODO Verificar se o ID não existe...
-		// TODO Usar try cath para propagar erro appropriadamente...
-		// TODO क्या आप इस कोड को अपने जीवन की महिला को दिखाने की हिम्मत करेंगे ???
-		// TODO మీ జీవితంలోని స్త్రీకి ఈ కోడ్ చూపించడానికి మీకు ధైర్యం ఉందా ???
-
-		// Reference:
-		// https://www.tutorialspoint.com/servlets/servlets-http-status-codes.htm
-		//
+		this.setAccessControlHeaders(response);
 		String companyId = request.getParameter("id");
 
 		if (Validator.isEmpty(companyId))
 			response = Errors.badRequest(response, "Employer ID can not be empty !");
+
+		Long companyIdInt = Long.valueOf(companyId);
+		Company e = this.companyDao.getCompanyById(companyIdInt);
+
+		if (e.getId() == 0)
+			Errors.notFound(response, "Employer with ID:" + companyId + " doesn't exists");
 		else {
-			Long companyIdInt = Long.valueOf(request.getParameter("employer-id"));
-
-			CompanyDao ud = new CompanyDao();
-
-			ud.deleteCompany(companyIdInt);
-
-			response.getWriter().append(request.getParameter("employer-id") + " employer removido");
+			this.companyDao.deleteCompany(companyIdInt);
+			response.setStatus(204);
 		}
 	}
 

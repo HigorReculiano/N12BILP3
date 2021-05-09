@@ -16,34 +16,32 @@ public class Employer {
 	private long id;
 	private String name,
 	               age,
-	               login;
+	               company,
+				   role;
 	private long companyId,
 				 roleId;
 	
 	public Employer() {
 		
 	}
-	public Employer(String id, String name, String age, String login) {
+	public Employer(String id, String name, String age) {
 		super();
 		setId(id);
 		setName(name);
 		setAge(age);
-		setLogin(login);
 	}
 	
-	public Employer(long id, String name, String age, String login) {
+	public Employer(long id, String name, String age) {
 		super();
 		setId(id);
 		setName(name);
 		setAge(age);
-		setLogin(login);
 	}
 	
-	public Employer(String name, String age, String login) {
+	public Employer(String name, String age) {
 		super();
 		setName(name);
 		setAge(age);
-		setLogin(login);
 	}
 	/**
 	 * @return the id
@@ -91,27 +89,15 @@ public class Employer {
 	public void setAge(String age) {
 		this.age = age;
 	}
-	/**
-	 * @return the login
-	 */
-	public String getLogin() {
-		return login;
-	}
-	/**
-	 * @param login the login to set
-	 */
-	public void setLogin(String login) {
-		this.login = login;
-	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", age=" + age + ", login=" + login + ", companyId=" + companyId + ", roleId=" + roleId +"]";
+		return "User [id=" + id + ", name=" + name + ", age=" + age + ", companyId=" + companyId + ", roleId=" + roleId +"]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(login, age, id, name);
+		return Objects.hash(age, id, name);
 	}
 
 	@Override
@@ -123,7 +109,7 @@ public class Employer {
 			return false;
 		}
 		Employer other = (Employer) obj;
-		return Objects.equals(login, other.login) && Objects.equals(age, other.age) && id == other.id
+		return Objects.equals(age, other.age) && id == other.id
 				&& Objects.equals(name, other.name);
 	}
 	public long getCompanyId() {
@@ -137,5 +123,17 @@ public class Employer {
 	}
 	public void setRoleId(long roleId) {
 		this.roleId = roleId;
+	}
+	public String getCompany() {
+		return company;
+	}
+	public void setCompany(String company) {
+		this.company = company;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
 	}
 }

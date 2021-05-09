@@ -15,9 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import ec.ftt.dao.CompanyDao;
 import ec.ftt.dao.EmployerDao;
 import ec.ftt.dao.RoleDao;
+import ec.ftt.model.Company;
 import ec.ftt.model.Employer;
+import ec.ftt.model.Role;
 import ec.ftt.util.Errors;
 import ec.ftt.util.Helper;
 import ec.ftt.util.Validator;
@@ -53,6 +56,7 @@ public class EmployerApi extends HttpServlet {
 	 */
 	public void init(ServletConfig config) throws ServletException {
 		// TODO Auto-generated method stub
+
 	}
 
 	/**
@@ -61,6 +65,18 @@ public class EmployerApi extends HttpServlet {
 	public void destroy() {
 		// TODO Auto-generated method stub
 	}
+	
+	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		this.setAccessControlHeaders(response);
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+	
+	protected void setAccessControlHeaders (HttpServletResponse response) {
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
+		response.setHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -68,11 +84,21 @@ public class EmployerApi extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		this.setAccessControlHeaders(response);
 		String employerId = request.getParameter("id");
 		Gson gson = new Gson();
+		RoleDao roleDao = new RoleDao();
+		CompanyDao companyDao = new CompanyDao();
 
 		if (Validator.isEmpty(employerId)) {
 			List<Employer> employers = this.employerDao.getAllemployer();
+			
+			for(Employer e :employers) {
+				String company = companyDao.getCompanyById(e.getCompanyId()).getName();
+				String role = roleDao.getRoleById(e.getRoleId()).getDescription();
+				e.setCompany(company);
+				e.setRole(role);
+			}
 			response.getWriter().append(gson.toJson(employers));
 		} else {
 			long id = Long.valueOf(employerId);
@@ -81,6 +107,11 @@ public class EmployerApi extends HttpServlet {
 				Errors.notFound(response, "Employer with ID: "+ employerId+ " doesnt exists.");
 				return;
 			}
+			
+			String company = companyDao.getCompanyById(employer.getCompanyId()).getName();
+			String role = roleDao.getRoleById(employer.getRoleId()).getDescription();
+			employer.setCompany(company);
+			employer.setRole(role);
 			response.getWriter().append(gson.toJson(employer));
 		}
 	} // doGet
@@ -92,17 +123,21 @@ public class EmployerApi extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			this.setAccessControlHeaders(response);
 			Employer employer = Helper.getObjectFromJson(request.getReader(), Employer.class);
 
 			RoleDao roleDao = new RoleDao();
 			// ensure every employer added by API has employer role
 			employer.setRoleId(roleDao.getRoleByDescription("employer").getId());
 
-			if (Validator.isEmpty(employer.getLogin()) || Validator.isEmpty(employer.getName())
-					|| employer.getCompanyId() <= 0) {
+			if (Validator.isEmpty(employer.getName()) || Validator.isEmpty(employer.getCompany())) {
 				response = Errors.badRequest(response, "Check if all required fields are correctly filled !");
 				return;
 			}
+			
+			CompanyDao companyDao = new CompanyDao();
+			long companyId = companyDao.getCompanyByName(employer.getCompany()).getId();
+			employer.setCompanyId(companyId);
 
 			this.employerDao.addEmployer(employer);
 			response.setStatus(204);
@@ -123,6 +158,7 @@ public class EmployerApi extends HttpServlet {
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			this.setAccessControlHeaders(response);
 			String employerId = request.getParameter("id");
 
 			if (Validator.isEmpty(employerId)) {
@@ -144,6 +180,10 @@ public class EmployerApi extends HttpServlet {
 				return;
 			}
 			
+			CompanyDao companyDao = new CompanyDao();
+			long companyId = companyDao.getCompanyByName(employer.getCompany()).getId();
+			employerChanges.setCompanyId(companyId);
+			
 			Helper.merge(employer, employerChanges);
 			this.employerDao.updateemployer(employer);
 			response.setStatus(204);
@@ -163,6 +203,7 @@ public class EmployerApi extends HttpServlet {
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		this.setAccessControlHeaders(response);
 		String employerId = request.getParameter("id");
 
 		if (Validator.isEmpty(employerId))
