@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Início</title>
+    <title>Início</title>
 </head>
+
 <body class="page">
     <div class="headerUser">
         <H1>CADASTRO DE USUÁRIO</H1>
     </div>
-    <div class="areaCentrilizeInput">
+    <form class="areaCentrilizeInput" [formGroup]="userForm">
         <div class="inputArea">
             <mat-form-field class="example-full-width">
                 <mat-label>Nome</mat-label>
-                <input matInput placeholder="Ex. Higor">
+                <input matInput placeholder="Ex. Higor" formControlName="name">
             </mat-form-field>
             <mat-form-field class="example-full-width">
                 <mat-label>Idade</mat-label>
-                <input matInput placeholder="Ex. 21">
+                <input matInput placeholder="Ex. 21" formControlName="age">
             </mat-form-field>
-            <mat-form-field class="example-full-width">
-                <mat-label>Setor</mat-label>
-                <input matInput placeholder="Ex. RH">
+            <mat-form-field appearance="fill">
+                <mat-label>Empresa</mat-label>
+                <select matNativeControl required formControlName="company">
+                    <option value="Globo">Globo</option>
+                    <option value="FTT">FTT</option>
+                    <option value="Toledo">Toledo</option>
+                    <option value="Gorila">Gorila</option>
+                </select>
             </mat-form-field>
-            <button mat-raised-button color="primary" class="buttonSave">Cadastrar</button>
+            <button mat-raised-button color="primary" class="buttonSave" (click)="saveUser()" [disabled]="userForm.invalid">Cadastrar</button>
         </div>
-    </div>
+    </form>
 </body>
+
 </html>
