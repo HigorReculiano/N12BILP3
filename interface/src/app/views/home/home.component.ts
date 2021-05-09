@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
+
 export class HomeComponent implements OnInit {
 
   constructor(private router:Router) { }
@@ -16,5 +17,4 @@ export class HomeComponent implements OnInit {
   navigate(route:string){
       this.router.navigate([route])
   }
-
 }

@@ -8,6 +8,7 @@ import { CompanyComponent } from './views/company/company.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
+import {MatTableModule} from '@angular/material/table';
 import { HomeComponent } from './views/home/home.component';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,7 +27,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     BrowserAnimationsModule,
     MatButtonModule,
     MatInputModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]
