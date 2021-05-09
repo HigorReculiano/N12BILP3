@@ -32,19 +32,21 @@ export class CompanyComponent implements OnInit {
     }
   }
 
-  openDialog(element:userEdit): void {
+  async openDialog(element:userEdit){
     const dialogRef = this.dialog.open(EditUser, {
       width: '250px',
       data: {name:element.name, age:element.age, role:element.role, company:element.company}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.userService.editUser(element.id, result)
+    dialogRef.afterClosed().subscribe(async (result) => {
+      await this.userService.editUser(element.id, result)
+      await this.loadPage();
       console.log('The dialog was closed');
     });
   }
 
   async loadPage(){
+    //this.dataSource = [{name:"Renato", age:23, role:"Chefão", company:"FTT"}]
     this.dataSource = await this.companyService.getCompanies();
     this.cdr.markForCheck();
   }
