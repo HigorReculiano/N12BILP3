@@ -1,7 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { CompanyService } from '../services/company.service';
 import { UserService } from '../services/user.service';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
+
+export interface userEdit {id:number, name:string, age:number, role:string; company:string} 
 @Component({
   selector: 'app-company',
   templateUrl: './company.component.html',
@@ -9,12 +12,11 @@ import { UserService } from '../services/user.service';
   providers:[CompanyService]
 })
 
-
 export class CompanyComponent implements OnInit {
 
   dataSource:any[] = []
   displayedColumns = ["name", "age", "role", "company", "actions"]
-  constructor(private companyService:CompanyService, private cdr:ChangeDetectorRef, private userService:UserService) { }
+  constructor(private companyService:CompanyService, private cdr:ChangeDetectorRef, private userService:UserService, public dialog:MatDialog) { }
 
   async ngOnInit(){
     this.loadPage();
@@ -30,8 +32,38 @@ export class CompanyComponent implements OnInit {
     }
   }
 
+  openDialog(element:userEdit): void {
+    const dialogRef = this.dialog.open(EditUser, {
+      width: '250px',
+      data: {name:element.name, age:element.age, role:element.role, company:element.company}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.userService.editUser(element.id, result)
+      console.log('The dialog was closed');
+    });
+  }
+
   async loadPage(){
     this.dataSource = await this.companyService.getCompanies();
     this.cdr.markForCheck();
   }
+}
+
+@Component({
+  selector: 'editUser',
+  templateUrl: 'editUser.html',
+  styleUrls: ['./userEdit.component.scss']
+})
+export class EditUser {
+
+  constructor(
+    public dialogRef: MatDialogRef<EditUser>,
+    @Inject(MAT_DIALOG_DATA) public data: userEdit) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  
 }

@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { promise } from "selenium-webdriver";
 
 interface EmployerDTO { name: string; age: number; company: string }
 
@@ -18,4 +19,10 @@ export class UserService {
             `http://localhost:8080/api/employer?id=${idUser}`
         ).toPromise();
         };
+
+    editUser = (idUser:number, user:any): Promise<any> => {
+        return this.http.put<any>(
+            `http://localhost:8080/api/employer?id=${idUser}`, user
+        ).toPromise();
+    }
 }

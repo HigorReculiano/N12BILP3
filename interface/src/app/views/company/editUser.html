@@ -1,0 +1,26 @@
+<div class="headerUser">
+    <H1>CADASTRO DE USUÁRIO</H1>
+</div>
+<div class="areaCentrilizeInput">
+    <div class="inputArea">
+        <mat-form-field class="example-full-width">
+            <mat-label>Nome</mat-label>
+            <input matInput placeholder="Ex. Higor" [(ngModel)]="data.name">
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <mat-label>Idade</mat-label>
+            <input matInput placeholder="Ex. 21" [(ngModel)]="data.age">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Empresa</mat-label>
+            <select matNativeControl required [(ngModel)]="data.company">
+                <option value="Globo">Globo</option>
+                <option value="FTT">FTT</option>
+                <option value="Toledo">Toledo</option>
+                <option value="Gorila">Gorila</option>
+            </select>
+        </mat-form-field>
+        <button mat-button (click)="onNoClick()">No Thanks</button>
+        <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+    </div>
+</div>
