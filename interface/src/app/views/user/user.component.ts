@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 
 @Component({
@@ -9,15 +10,19 @@ import { UserService } from '../services/user.service';
 })
 export class UserComponent implements OnInit {
 
-  constructor(private userService:UserService) { }
-  userForm = new FormGroup({name:new FormControl("",[Validators.required]), age:new FormControl("",[Validators.required]), company:new FormControl("",[Validators.required])})
+  constructor(private router: Router, private userService: UserService) { }
+  userForm = new FormGroup({ name: new FormControl("", [Validators.required]), age: new FormControl("", [Validators.required]), company: new FormControl("", [Validators.required]) })
   ngOnInit(): void {
   }
 
-  async saveUser(){
-    try{
+  navigate(route: string) {
+    this.router.navigate([route])
+  }
+
+  async saveUser() {
+    try {
       await this.userService.saveUser(this.userForm.getRawValue());
-    }catch(erro){
+    } catch (erro) {
       console.log(erro);
     }
   }

@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Início</title>
+  <title>Início</title>
 </head>
+
 <body class="page">
-    <div class="headerCompany">
-        <H1>LISTAGEM DE EMPREGADOS POR EMPRESA</H1>
-    </div>
-    <div>
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <div class="headerCompany">
+    <H1>LISTAGEM DE EMPREGADOS POR EMPRESA</H1>
+    <button mat-raised-button color="primary" (click)="navigate('')" class="buttonNavigate"><mat-icon>home</mat-icon></button>
+  </div>
+  <div>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef> Nome. </th>
-              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-            </ng-container>
-          
-            <ng-container matColumnDef="age">
-              <th mat-header-cell *matHeaderCellDef> Idade </th>
-              <td mat-cell *matCellDef="let element"> {{element.age}} </td>
-            </ng-container>
-          
-            <ng-container matColumnDef="role">
-              <th mat-header-cell *matHeaderCellDef> Cargo </th>
-              <td mat-cell *matCellDef="let element"> {{element.role}} </td>
-            </ng-container>
-          
-            <ng-container matColumnDef="company">
-              <th mat-header-cell *matHeaderCellDef> Empresa </th>
-              <td mat-cell *matCellDef="let element"> {{element.company}} </td>
-            </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Nome. </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
 
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef> Ações </th>
-                <td mat-cell *matCellDef="let element"> 
-                    <button mat-mini-fab color="primary" (click)="deleteUser(element.id)" class="buttonAction"><mat-icon>delete</mat-icon></button>
-                    <button mat-mini-fab color="primary" (click)="openDialog(element)" class="buttonAction"><mat-icon>edit</mat-icon></button>
-                </td>
-              </ng-container>
-          
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-    </div>
+      <ng-container matColumnDef="age">
+        <th mat-header-cell *matHeaderCellDef> Idade </th>
+        <td mat-cell *matCellDef="let element"> {{element.age}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef> Cargo </th>
+        <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="company">
+        <th mat-header-cell *matHeaderCellDef> Empresa </th>
+        <td mat-cell *matCellDef="let element"> {{element.company}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Ações </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-mini-fab color="primary" (click)="deleteUser(element.id)" class="buttonAction">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-mini-fab color="primary" (click)="openDialog(element)" class="buttonAction">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
 </body>
+
 </html>

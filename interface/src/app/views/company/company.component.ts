@@ -1,41 +1,45 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { CompanyService } from '../services/company.service';
 import { UserService } from '../services/user.service';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 
-export interface userEdit {id:number, name:string, age:number, role:string; company:string}
+export interface userEdit { id: number, name: string, age: number, role: string; company: string }
 @Component({
   selector: 'app-company',
   templateUrl: './company.component.html',
   styleUrls: ['./company.component.scss'],
-  providers:[CompanyService]
+  providers: [CompanyService]
 })
 
 export class CompanyComponent implements OnInit {
 
-  dataSource:any[] = []
+  dataSource: any[] = []
   displayedColumns = ["name", "age", "role", "company", "actions"]
-  constructor(private companyService:CompanyService, private cdr:ChangeDetectorRef, private userService:UserService, public dialog:MatDialog) { }
+  constructor(private router: Router, private companyService: CompanyService, private cdr: ChangeDetectorRef, private userService: UserService, public dialog: MatDialog) { }
 
-  async ngOnInit(){
+  async ngOnInit() {
     this.loadPage();
   }
 
-  async deleteUser(idUser:number){
-    try{
+  navigate(route: string) {
+    this.router.navigate([route])
+  }
+
+  async deleteUser(idUser: number) {
+    try {
       await this.userService.deleteUser(idUser);
       this.loadPage();
-    }catch(erro)
-    {
+    } catch (erro) {
       console.log(erro);
     }
   }
 
-  async openDialog(element:userEdit){
+  async openDialog(element: userEdit) {
     const dialogRef = this.dialog.open(EditUser, {
       width: '250px',
-      data: {name:element.name, age:element.age, role:element.role, company:element.company}
+      data: { name: element.name, age: element.age, role: element.role, company: element.company }
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
@@ -45,7 +49,7 @@ export class CompanyComponent implements OnInit {
     });
   }
 
-  async loadPage(){
+  async loadPage() {
     this.dataSource = await this.companyService.getCompanies();
     this.cdr.markForCheck();
   }
@@ -60,7 +64,7 @@ export class EditUser {
 
   constructor(
     public dialogRef: MatDialogRef<EditUser>,
-    @Inject(MAT_DIALOG_DATA) public data: userEdit) {}
+    @Inject(MAT_DIALOG_DATA) public data: userEdit) { }
 
   onNoClick(): void {
     this.dialogRef.close();
