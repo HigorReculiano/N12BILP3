@@ -180,6 +180,10 @@ public class EmployerApi extends HttpServlet {
 				return;
 			}
 			
+			CompanyDao companyDao = new CompanyDao();
+			long companyId = companyDao.getCompanyByName(employer.getCompany()).getId();
+			employerChanges.setCompanyId(companyId);
+			
 			Helper.merge(employer, employerChanges);
 			this.employerDao.updateemployer(employer);
 			response.setStatus(204);
