@@ -17,16 +17,21 @@ export class CompanyComponent implements OnInit {
   constructor(private companyService:CompanyService, private cdr:ChangeDetectorRef, private userService:UserService) { }
 
   async ngOnInit(){
-    this.dataSource = await this.companyService.getCompanies();
-    this.cdr.markForCheck();
+    this.loadPage();
   }
 
   async deleteUser(idUser:number){
     try{
       await this.userService.deleteUser(idUser);
+      this.loadPage();
     }catch(erro)
     {
       console.log(erro);
     }
+  }
+
+  async loadPage(){
+    this.dataSource = await this.companyService.getCompanies();
+    this.cdr.markForCheck();
   }
 }
