@@ -1,3 +1,16 @@
-<button mat-raised-button color="primary" (click)="navigate('user')">Funcionários</button>
-<button mat-raised-button color="primary" (click)="navigate('company')">Empresa</button>
-<button mat-raised-button color="primary" (click)="navigate('dashboard')">Dashboard</button>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Início</title>
+</head>
+<body class="page">
+    <header class="headerHome">
+        <h1>BEM VINDO AO SITE DE CADASTRO E VISUALIZAÇÃO DE EMPREGADOS</h1>
+    </header>
+    <div class="homePage">
+        <button mat-raised-button color="primary" (click)="navigate('user')" class="buttonNavigate">Funcionários</button>
+        <button mat-raised-button color="primary" (click)="navigate('company')" class="buttonNavigate">Empresa</button>
+        <button mat-raised-button color="primary" (click)="navigate('dashboard')" class="buttonNavigate">Dashboard</button>
+    </div>
+</body>
+</html>
