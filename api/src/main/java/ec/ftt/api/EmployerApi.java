@@ -1,7 +1,10 @@
 package ec.ftt.api;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import ec.ftt.dao.EmployerDao;
+import ec.ftt.dao.RoleDao;
 import ec.ftt.model.Employer;
 import ec.ftt.util.Errors;
 import ec.ftt.util.Helper;
@@ -34,13 +38,14 @@ import ec.ftt.util.Validator;
 @WebServlet("/employer")
 public class EmployerApi extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private EmployerDao employerDao;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public EmployerApi() {
 		super();
-		// TODO Auto-generated constructor stub
+		this.employerDao = new EmployerDao();
 	}
 
 	/**
@@ -64,23 +69,18 @@ public class EmployerApi extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String employerId = request.getParameter("id");
+		Gson gson = new Gson();
 
 		if (Validator.isEmpty(employerId)) {
-			EmployerDao employerDao = new EmployerDao();
-
-			List<Employer> employers = employerDao.getAllemployer();
-
-			Gson gson = new Gson();
-
+			List<Employer> employers = this.employerDao.getAllemployer();
 			response.getWriter().append(gson.toJson(employers));
-
 		} else {
 			long id = Long.valueOf(employerId);
-
-			EmployerDao employerDao = new EmployerDao();
-
-			Employer employer = employerDao.getemployerById(id);
-			Gson gson = new Gson();
+			Employer employer = this.employerDao.getemployerById(id);
+			if (employer.getId() == 0) {
+				Errors.notFound(response, "Employer with ID: "+ employerId+ " doesnt exists.");
+				return;
+			}
 			response.getWriter().append(gson.toJson(employer));
 		}
 	} // doGet
@@ -91,13 +91,30 @@ public class EmployerApi extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Employer employer = Helper.getObjectFromJson(request.getReader(), Employer.class);
+		try {
+			Employer employer = Helper.getObjectFromJson(request.getReader(), Employer.class);
 
-		if(Validator.isEmpty(employer.getLogin()) || Validator.isEmpty(employer.getName())) {
-			response = Errors.badRequest(response, "Check if all required fields are correctly filled !");
-			return;
+			RoleDao roleDao = new RoleDao();
+			// ensure every employer added by API has employer role
+			employer.setRoleId(roleDao.getRoleByDescription("employer").getId());
+
+			if (Validator.isEmpty(employer.getLogin()) || Validator.isEmpty(employer.getName())
+					|| employer.getCompanyId() <= 0) {
+				response = Errors.badRequest(response, "Check if all required fields are correctly filled !");
+				return;
+			}
+
+			this.employerDao.addEmployer(employer);
+			response.setStatus(204);
+		} catch (SQLException e) {
+			if (e instanceof SQLIntegrityConstraintViolationException) {
+				Errors.conflict(response, "unique key login already exists !");
+			}
+			e.printStackTrace();
+		} catch (Exception e) {
+			Errors.serverError(response, e.getMessage());
+			e.printStackTrace();
 		}
-		response.getWriter().append(new Gson().toJson(employer));
 	}
 
 	/**
@@ -105,16 +122,39 @@ public class EmployerApi extends HttpServlet {
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Ajustar errors com try catch
-		
-		String employerId = request.getParameter("id");
-		
-		if(Validator.isEmpty(employerId)) {
-			response = Errors.badRequest(response, "Employer ID can not be empty !");
-		} else {	
-			Employer employer = Helper.getObjectFromJson(request.getReader(), Employer.class);
+		try {
+			String employerId = request.getParameter("id");
 
-			response.getWriter().append(new Gson().toJson(employer));	
+			if (Validator.isEmpty(employerId)) {
+				Errors.badRequest(response, "Employer ID can not be empty");
+				return;
+			}
+			
+			long id = Long.valueOf(employerId);
+			Employer employer = this.employerDao.getemployerById(id);
+			if (employer.getId() == 0) {
+				Errors.notFound(response, "Employer with ID: "+ employerId+ " doesnt exists.");
+				return;
+			}
+			
+			Employer employerChanges = Helper.getObjectFromJson(request.getReader(), Employer.class);
+			
+			if(Objects.isNull(employerChanges)) {
+				Errors.badRequest(response, "Employer JSON is null");
+				return;
+			}
+			
+			Helper.merge(employer, employerChanges);
+			this.employerDao.updateemployer(employer);
+			response.setStatus(204);
+		} catch (SQLException e) {
+			if (e instanceof SQLIntegrityConstraintViolationException) {
+				Errors.conflict(response, "unique key login already exists !");
+			}
+			e.printStackTrace();
+		} catch (Exception e) {
+			Errors.serverError(response, e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -123,31 +163,19 @@ public class EmployerApi extends HttpServlet {
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// https://www.tutorialspoint.com/servlets/servlets-http-status-codes.htm
-
-		// TODO Verificar se está enviando o parametro
-		// TODO Verificar se o parametro é null
-		// TODO Se o ID já foi apagado
-		// TODO Verificar se o ID não existe...
-		// TODO Usar try cath para propagar erro appropriadamente...
-		// TODO क्या आप इस कोड को अपने जीवन की महिला को दिखाने की हिम्मत करेंगे ???
-		// TODO మీ జీవితంలోని స్త్రీకి ఈ కోడ్ చూపించడానికి మీకు ధైర్యం ఉందా ???
-
-		// Reference:
-		// https://www.tutorialspoint.com/servlets/servlets-http-status-codes.htm
-		//
 		String employerId = request.getParameter("id");
-		
+
 		if (Validator.isEmpty(employerId))
 			response = Errors.badRequest(response, "Employer ID can not be empty !");
+
+		Long employerIdInt = Long.valueOf(employerId);
+		Employer e = this.employerDao.getemployerById(employerIdInt);
+
+		if (e.getId() == 0)
+			Errors.notFound(response, "Employer with ID:" + employerId + " doesn't exists");
 		else {
-			Long employerIdInt = Long.valueOf(request.getParameter("employer-id"));
-
-			EmployerDao ud = new EmployerDao();
-
-			ud.deleteemployer(employerIdInt);
-
-			response.getWriter().append(request.getParameter("employer-id") + " employer removido");
+			this.employerDao.deleteemployer(employerIdInt);
+			response.setStatus(204);
 		}
 	}
 
