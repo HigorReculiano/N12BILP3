@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import ec.ftt.dao.EmployerDao;
+import ec.ftt.dao.CompanyDao;
+import ec.ftt.model.Company;
 import ec.ftt.model.Employer;
 import ec.ftt.util.Errors;
 import ec.ftt.util.Helper;
@@ -31,14 +32,14 @@ import ec.ftt.util.Validator;
 // TODO: PROJETO: Gerar gráfico com "Chart.js" https://www.chartjs.org/
 // TODO: PROJETO: Trabalhar bem mensagens de erro da WEB API com try catch
 
-@WebServlet("/employer")
-public class EmployerApi extends HttpServlet {
+@WebServlet("/company")
+public class CompanyApi extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public EmployerApi() {
+	public CompanyApi() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -63,25 +64,17 @@ public class EmployerApi extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String employerId = request.getParameter("id");
+		CompanyDao companyDao = new CompanyDao();
+		Gson gson = new Gson();
+		String companyId = request.getParameter("id");
 
-		if (Validator.isEmpty(employerId)) {
-			EmployerDao employerDao = new EmployerDao();
-
-			List<Employer> employers = employerDao.getAllemployer();
-
-			Gson gson = new Gson();
-
-			response.getWriter().append(gson.toJson(employers));
-
+		if (Validator.isEmpty(companyId)) {
+			List<Company> companies = companyDao.getAllCompany();
+			response.getWriter().append(gson.toJson(companies));
 		} else {
-			long id = Long.valueOf(employerId);
-
-			EmployerDao employerDao = new EmployerDao();
-
-			Employer employer = employerDao.getemployerById(id);
-			Gson gson = new Gson();
-			response.getWriter().append(gson.toJson(employer));
+			long id = Long.valueOf(companyId);
+			Company company = companyDao.getCompanyById(id);
+			response.getWriter().append(gson.toJson(company));
 		}
 	} // doGet
 
@@ -93,7 +86,7 @@ public class EmployerApi extends HttpServlet {
 			throws ServletException, IOException {
 		Employer employer = Helper.getObjectFromJson(request.getReader(), Employer.class);
 
-		if(Validator.isEmpty(employer.getLogin()) || Validator.isEmpty(employer.getName())) {
+		if (Validator.isEmpty(employer.getLogin()) || Validator.isEmpty(employer.getName())) {
 			response = Errors.badRequest(response, "Check if all required fields are correctly filled !");
 			return;
 		}
@@ -106,15 +99,15 @@ public class EmployerApi extends HttpServlet {
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Ajustar errors com try catch
-		
-		String employerId = request.getParameter("id");
-		
-		if(Validator.isEmpty(employerId)) {
+
+		String companyId = request.getParameter("id");
+
+		if (Validator.isEmpty(companyId)) {
 			response = Errors.badRequest(response, "Employer ID can not be empty !");
-		} else {	
+		} else {
 			Employer employer = Helper.getObjectFromJson(request.getReader(), Employer.class);
 
-			response.getWriter().append(new Gson().toJson(employer));	
+			response.getWriter().append(new Gson().toJson(employer));
 		}
 	}
 
@@ -136,16 +129,16 @@ public class EmployerApi extends HttpServlet {
 		// Reference:
 		// https://www.tutorialspoint.com/servlets/servlets-http-status-codes.htm
 		//
-		String employerId = request.getParameter("id");
-		
-		if (Validator.isEmpty(employerId))
+		String companyId = request.getParameter("id");
+
+		if (Validator.isEmpty(companyId))
 			response = Errors.badRequest(response, "Employer ID can not be empty !");
 		else {
-			Long employerIdInt = Long.valueOf(request.getParameter("employer-id"));
+			Long companyIdInt = Long.valueOf(request.getParameter("employer-id"));
 
-			EmployerDao ud = new EmployerDao();
+			CompanyDao ud = new CompanyDao();
 
-			ud.deleteemployer(employerIdInt);
+			ud.deleteCompany(companyIdInt);
 
 			response.getWriter().append(request.getParameter("employer-id") + " employer removido");
 		}

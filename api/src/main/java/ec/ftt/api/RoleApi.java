@@ -12,8 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import ec.ftt.dao.EmployerDao;
-import ec.ftt.model.Employer;
+import ec.ftt.dao.RoleDao;
+import ec.ftt.model.Role;
+import ec.ftt.model.Role;
 import ec.ftt.util.Errors;
 import ec.ftt.util.Helper;
 import ec.ftt.util.Validator;
@@ -31,14 +32,14 @@ import ec.ftt.util.Validator;
 // TODO: PROJETO: Gerar gráfico com "Chart.js" https://www.chartjs.org/
 // TODO: PROJETO: Trabalhar bem mensagens de erro da WEB API com try catch
 
-@WebServlet("/employer")
-public class EmployerApi extends HttpServlet {
+@WebServlet("/role")
+public class RoleApi extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public EmployerApi() {
+	public RoleApi() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -63,25 +64,17 @@ public class EmployerApi extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String employerId = request.getParameter("id");
+		RoleDao roleDao = new RoleDao();
+		Gson gson = new Gson();
+		String companyId = request.getParameter("id");
 
-		if (Validator.isEmpty(employerId)) {
-			EmployerDao employerDao = new EmployerDao();
-
-			List<Employer> employers = employerDao.getAllemployer();
-
-			Gson gson = new Gson();
-
-			response.getWriter().append(gson.toJson(employers));
-
+		if (Validator.isEmpty(companyId)) {
+			List<Role> roles = roleDao.getAllRole();
+			response.getWriter().append(gson.toJson(roles));
 		} else {
-			long id = Long.valueOf(employerId);
-
-			EmployerDao employerDao = new EmployerDao();
-
-			Employer employer = employerDao.getemployerById(id);
-			Gson gson = new Gson();
-			response.getWriter().append(gson.toJson(employer));
+			long id = Long.valueOf(companyId);
+			Role company = roleDao.getRoleById(id);
+			response.getWriter().append(gson.toJson(company));
 		}
 	} // doGet
 
@@ -91,9 +84,9 @@ public class EmployerApi extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Employer employer = Helper.getObjectFromJson(request.getReader(), Employer.class);
+		Role employer = Helper.getObjectFromJson(request.getReader(), Role.class);
 
-		if(Validator.isEmpty(employer.getLogin()) || Validator.isEmpty(employer.getName())) {
+		if (Validator.isEmpty(employer.getDescription())) {
 			response = Errors.badRequest(response, "Check if all required fields are correctly filled !");
 			return;
 		}
@@ -106,15 +99,15 @@ public class EmployerApi extends HttpServlet {
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Ajustar errors com try catch
-		
-		String employerId = request.getParameter("id");
-		
-		if(Validator.isEmpty(employerId)) {
-			response = Errors.badRequest(response, "Employer ID can not be empty !");
-		} else {	
-			Employer employer = Helper.getObjectFromJson(request.getReader(), Employer.class);
 
-			response.getWriter().append(new Gson().toJson(employer));	
+		String companyId = request.getParameter("id");
+
+		if (Validator.isEmpty(companyId)) {
+			response = Errors.badRequest(response, "Role ID can not be empty !");
+		} else {
+			Role employer = Helper.getObjectFromJson(request.getReader(), Role.class);
+
+			response.getWriter().append(new Gson().toJson(employer));
 		}
 	}
 
@@ -136,16 +129,16 @@ public class EmployerApi extends HttpServlet {
 		// Reference:
 		// https://www.tutorialspoint.com/servlets/servlets-http-status-codes.htm
 		//
-		String employerId = request.getParameter("id");
-		
-		if (Validator.isEmpty(employerId))
-			response = Errors.badRequest(response, "Employer ID can not be empty !");
+		String companyId = request.getParameter("id");
+
+		if (Validator.isEmpty(companyId))
+			response = Errors.badRequest(response, "Role ID can not be empty !");
 		else {
-			Long employerIdInt = Long.valueOf(request.getParameter("employer-id"));
+			Long companyIdInt = Long.valueOf(request.getParameter("employer-id"));
 
-			EmployerDao ud = new EmployerDao();
+			RoleDao ud = new RoleDao();
 
-			ud.deleteemployer(employerIdInt);
+			ud.deleteRole(companyIdInt);
 
 			response.getWriter().append(request.getParameter("employer-id") + " employer removido");
 		}
