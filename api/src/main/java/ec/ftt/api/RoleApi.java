@@ -1,6 +1,8 @@
 package ec.ftt.api;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import ec.ftt.dao.RoleDao;
+import ec.ftt.model.Role;
 import ec.ftt.model.Role;
 import ec.ftt.model.Role;
 import ec.ftt.util.Errors;
@@ -35,6 +38,7 @@ import ec.ftt.util.Validator;
 @WebServlet("/role")
 public class RoleApi extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private RoleDao roleDao;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -42,6 +46,19 @@ public class RoleApi extends HttpServlet {
 	public RoleApi() {
 		super();
 		// TODO Auto-generated constructor stub
+		this.roleDao = new RoleDao();
+	}
+	
+	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		this.setAccessControlHeaders(response);
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+	
+	protected void setAccessControlHeaders (HttpServletResponse response) {
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
+		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
 	}
 
 	/**
@@ -66,15 +83,15 @@ public class RoleApi extends HttpServlet {
 			throws ServletException, IOException {
 		RoleDao roleDao = new RoleDao();
 		Gson gson = new Gson();
-		String companyId = request.getParameter("id");
+		String roleId = request.getParameter("id");
 
-		if (Validator.isEmpty(companyId)) {
+		if (Validator.isEmpty(roleId)) {
 			List<Role> roles = roleDao.getAllRole();
 			response.getWriter().append(gson.toJson(roles));
 		} else {
-			long id = Long.valueOf(companyId);
-			Role company = roleDao.getRoleById(id);
-			response.getWriter().append(gson.toJson(company));
+			long id = Long.valueOf(roleId);
+			Role role = roleDao.getRoleById(id);
+			response.getWriter().append(gson.toJson(role));
 		}
 	} // doGet
 
@@ -84,13 +101,25 @@ public class RoleApi extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Role employer = Helper.getObjectFromJson(request.getReader(), Role.class);
+		try {
+			this.setAccessControlHeaders(response);
+			Role role = Helper.getObjectFromJson(request.getReader(), Role.class);
+			if (Validator.isEmpty(role.getDescription())) {
+				response = Errors.badRequest(response, "Check if all required fields are correctly filled !");
+				return;
+			}
 
-		if (Validator.isEmpty(employer.getDescription())) {
-			response = Errors.badRequest(response, "Check if all required fields are correctly filled !");
-			return;
+			this.roleDao.addRole(role);
+			response.setStatus(204);
+		} catch (SQLException e) {
+			if (e instanceof SQLIntegrityConstraintViolationException) {
+				Errors.conflict(response, "unique key login already exists !");
+			}
+			e.printStackTrace();
+		} catch (Exception e) {
+			Errors.serverError(response, e.getMessage());
+			e.printStackTrace();
 		}
-		response.getWriter().append(new Gson().toJson(employer));
 	}
 
 	/**
@@ -98,11 +127,10 @@ public class RoleApi extends HttpServlet {
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Ajustar errors com try catch
+		this.setAccessControlHeaders(response);
+		String roleId = request.getParameter("id");
 
-		String companyId = request.getParameter("id");
-
-		if (Validator.isEmpty(companyId)) {
+		if (Validator.isEmpty(roleId)) {
 			response = Errors.badRequest(response, "Role ID can not be empty !");
 		} else {
 			Role employer = Helper.getObjectFromJson(request.getReader(), Role.class);
@@ -116,29 +144,17 @@ public class RoleApi extends HttpServlet {
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// https://www.tutorialspoint.com/servlets/servlets-http-status-codes.htm
+		this.setAccessControlHeaders(response);
+		String roleId = request.getParameter("id");
 
-		// TODO Verificar se está enviando o parametro
-		// TODO Verificar se o parametro é null
-		// TODO Se o ID já foi apagado
-		// TODO Verificar se o ID não existe...
-		// TODO Usar try cath para propagar erro appropriadamente...
-		// TODO क्या आप इस कोड को अपने जीवन की महिला को दिखाने की हिम्मत करेंगे ???
-		// TODO మీ జీవితంలోని స్త్రీకి ఈ కోడ్ చూపించడానికి మీకు ధైర్యం ఉందా ???
-
-		// Reference:
-		// https://www.tutorialspoint.com/servlets/servlets-http-status-codes.htm
-		//
-		String companyId = request.getParameter("id");
-
-		if (Validator.isEmpty(companyId))
+		if (Validator.isEmpty(roleId))
 			response = Errors.badRequest(response, "Role ID can not be empty !");
 		else {
-			Long companyIdInt = Long.valueOf(request.getParameter("employer-id"));
+			Long roleIdInt = Long.valueOf(request.getParameter("employer-id"));
 
 			RoleDao ud = new RoleDao();
 
-			ud.deleteRole(companyIdInt);
+			ud.deleteRole(roleIdInt);
 
 			response.getWriter().append(request.getParameter("employer-id") + " employer removido");
 		}

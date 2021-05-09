@@ -18,9 +18,8 @@ public class RoleDao {
         connection = DBUtil.getConnection();
     } //roleDao
 
-    public void addRole(Role role) {
-    	try {
-    		
+    public void addRole(Role role) throws SQLException {
+
     		System.out.println("Here we are...");
     		
             PreparedStatement preparedStatement = connection
@@ -31,10 +30,6 @@ public class RoleDao {
 
             
             preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     } //addrole
     
     public void deleteRole(Long id) {

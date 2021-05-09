@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS  employer (
     role_id int not null,
     name varchar(255) NOT NULL,
     age int,
-    login varchar(255) not null unique,
     
     PRIMARY KEY (id),
     FOREIGN KEY (company_id) REFERENCES company(id),
@@ -42,27 +41,27 @@ VALUES
 ('Toledo', '59.704.510/0021-36'),
 ('Gorila', '14.053.036/0001-48');
 
-INSERT INTO employer (name , login , age , company_id , role_id )
+INSERT INTO employer (name , age , company_id , role_id )
 VALUES
-('Christian', 'chseki', 27, (SELECT id FROM company WHERE name = 'Gorila'), (SELECT id FROM role WHERE description = 'Employer')),
-('Higor', 'higorh', 20, (SELECT id FROM company WHERE name = 'Toledo'), (SELECT id FROM role WHERE description = 'Employer')),
-('Vitor', 'vitorgc', 19, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Employer')),
-('Cristina', 'chtina', 27, (SELECT id FROM company WHERE name = 'Gorila'), (SELECT id FROM role WHERE description = 'Employer')),
-('Thamires', 'thami', 20, (SELECT id FROM company WHERE name = 'Gorila'), (SELECT id FROM role WHERE description = 'Employer')),
-('Vittorina', 'vittorina', 19, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Employer')),
-('Renatinha', 'rnata', 31, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
-('Renato', 'Renatinho', 27, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
-('Cacaroto', 'cribon', 17, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
-('Vegeta', 'vegeta', 27, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
+('Christian', 27, (SELECT id FROM company WHERE name = 'Gorila'), (SELECT id FROM role WHERE description = 'Employer')),
+('Higor',  20, (SELECT id FROM company WHERE name = 'Toledo'), (SELECT id FROM role WHERE description = 'Employer')),
+('Vitor',  19, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Employer')),
+('Cristina',  27, (SELECT id FROM company WHERE name = 'Gorila'), (SELECT id FROM role WHERE description = 'Employer')),
+('Thamires',  20, (SELECT id FROM company WHERE name = 'Gorila'), (SELECT id FROM role WHERE description = 'Employer')),
+('Vittorina',  19, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Employer')),
+('Renatinha',  31, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
+('Renato',  27, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
+('Cacaroto',  17, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
+('Vegeta',  27, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
 
-('Rafael', 'rafs', 21, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Employer')),
-('Rafaella', 'rafinha', 18, (SELECT id FROM company WHERE name = 'Gorila'), (SELECT id FROM role WHERE description = 'Employer')),
-('Daniel', 'danis', 42, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Employer')),
-('Lamesa', 'table', 30, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Employer')),
-('Faustão', 'fausto', 49, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
-('Serginho', 'sergs', 75, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
+('Rafael',  21, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Employer')),
+('Rafaella',  18, (SELECT id FROM company WHERE name = 'Gorila'), (SELECT id FROM role WHERE description = 'Employer')),
+('Daniel',  42, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Employer')),
+('Lamesa',  30, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Employer')),
+('Faustão',  49, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
+('Serginho', 75, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Employer')),
 
-('Guilherme', 'guish', 30, (SELECT id FROM company WHERE name = 'Gorila'), (SELECT id FROM role WHERE description = 'Manager')),
-('Juliete', 'julbbb', 27, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Manager')),
-('Leonardo', 'leojh', 32, (SELECT id FROM company WHERE name = 'Toledo'), (SELECT id FROM role WHERE description = 'Manager')),
-('Vu', 'Who', 127, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Manager'));
+('Guilherme', 30, (SELECT id FROM company WHERE name = 'Gorila'), (SELECT id FROM role WHERE description = 'Manager')),
+('Juliete',  27, (SELECT id FROM company WHERE name = 'Globo'), (SELECT id FROM role WHERE description = 'Manager')),
+('Leonardo',  32, (SELECT id FROM company WHERE name = 'Toledo'), (SELECT id FROM role WHERE description = 'Manager')),
+('Vu',  127, (SELECT id FROM company WHERE name = 'FTT'), (SELECT id FROM role WHERE description = 'Manager'));
