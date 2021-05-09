@@ -16,6 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from './views/services/user.service';
 import { HttpClientModule } from '@angular/common/http';
+import { CompanyService } from './views/services/company.service';
 
 
 @NgModule({
@@ -38,7 +39,7 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [UserService],
+  providers: [UserService, CompanyService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
