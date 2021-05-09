@@ -17,8 +17,7 @@ export class CompanyComponent implements OnInit {
   constructor(private companyService:CompanyService, private cdr:ChangeDetectorRef, private userService:UserService) { }
 
   async ngOnInit(){
-    //this.dataSource = await this.companyService.getCompanies();
-    this.dataSource = [{name:"Renato", age:"23", role:"Chefe", company:"FTT"}]
+    this.dataSource = await this.companyService.getCompanies();
     this.cdr.markForCheck();
   }
 
