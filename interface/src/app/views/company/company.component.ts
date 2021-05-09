@@ -4,7 +4,7 @@ import { UserService } from '../services/user.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 
-export interface userEdit {id:number, name:string, age:number, role:string; company:string} 
+export interface userEdit {id:number, name:string, age:number, role:string; company:string}
 @Component({
   selector: 'app-company',
   templateUrl: './company.component.html',
@@ -46,8 +46,7 @@ export class CompanyComponent implements OnInit {
   }
 
   async loadPage(){
-    this.dataSource = [{name:"Renato", age:23, role:"Chefão", company:"FTT"}]
-    //this.dataSource = await this.companyService.getCompanies();
+    this.dataSource = await this.companyService.getCompanies();
     this.cdr.markForCheck();
   }
 }
@@ -67,5 +66,5 @@ export class EditUser {
     this.dialogRef.close();
   }
 
-  
+
 }
