@@ -33,8 +33,8 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef> Ações </th>
                 <td mat-cell *matCellDef="let element"> 
-                    <button mat-mini-fab color="primary" (click)="deleteUser(element.id)" class="buttonNavigate"><mat-icon>delete</mat-icon></button>
-                    <button mat-mini-fab color="primary" (click)="openDialog(element)" class="buttonNavigate"><mat-icon>edit</mat-icon></button>
+                    <button mat-mini-fab color="primary" (click)="deleteUser(element.id)" class="buttonAction"><mat-icon>delete</mat-icon></button>
+                    <button mat-mini-fab color="primary" (click)="openDialog(element)" class="buttonAction"><mat-icon>edit</mat-icon></button>
                 </td>
               </ng-container>
           

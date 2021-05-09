@@ -36,7 +36,10 @@
     }
 }
 
-
+.buttonsActionDiv{
+    display: flex;
+    justify-content: space-around;
+}
 .buttonSave{
     margin-left: 10%;
 }

@@ -46,8 +46,8 @@ export class CompanyComponent implements OnInit {
   }
 
   async loadPage(){
-    //this.dataSource = [{name:"Renato", age:23, role:"Chefão", company:"FTT"}]
-    this.dataSource = await this.companyService.getCompanies();
+    this.dataSource = [{name:"Renato", age:23, role:"Chefão", company:"FTT"}]
+    //this.dataSource = await this.companyService.getCompanies();
     this.cdr.markForCheck();
   }
 }
