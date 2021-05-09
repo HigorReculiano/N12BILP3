@@ -11,30 +11,37 @@ import java.util.Objects;
 //https://pt.wikipedia.org/wiki/JavaBeans
 
 
-public class User {
+public class Employer {
 
 	private long id;
 	private String name,
-	               email,
-	               color;
+	               age,
+	               login;
 	
-	public User() {
+	public Employer() {
 		
 	}
-	public User(String id, String name, String email, String color) {
+	public Employer(String id, String name, String age, String login) {
 		super();
 		setId(id);
 		setName(name);
-		setEmail(email);
-		setColor(color);
+		setAge(age);
+		setLogin(login);
 	}
 	
-	public User(long id, String name, String email, String color) {
+	public Employer(long id, String name, String age, String login) {
 		super();
 		setId(id);
 		setName(name);
-		setEmail(email);
-		setColor(color);
+		setAge(age);
+		setLogin(login);
+	}
+	
+	public Employer(String name, String age, String login) {
+		super();
+		setName(name);
+		setAge(age);
+		setLogin(login);
 	}
 	/**
 	 * @return the id
@@ -71,38 +78,38 @@ public class User {
 		this.name = name;
 	}
 	/**
-	 * @return the email
+	 * @return the age
 	 */
-	public String getEmail() {
-		return email;
+	public String getAge() {
+		return age;
 	}
 	/**
-	 * @param email the email to set
+	 * @param age the age to set
 	 */
-	public void setEmail(String email) {
-		this.email = email;
+	public void setAge(String age) {
+		this.age = age;
 	}
 	/**
-	 * @return the color
+	 * @return the login
 	 */
-	public String getColor() {
-		return color;
+	public String getLogin() {
+		return login;
 	}
 	/**
-	 * @param color the color to set
+	 * @param login the login to set
 	 */
-	public void setColor(String color) {
-		this.color = color;
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", email=" + email + ", color=" + color + "]";
+		return "User [id=" + id + ", name=" + name + ", age=" + age + ", login=" + login + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(color, email, id, name);
+		return Objects.hash(login, age, id, name);
 	}
 
 	@Override
@@ -110,15 +117,11 @@ public class User {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof User)) {
+		if (!(obj instanceof Employer)) {
 			return false;
 		}
-		User other = (User) obj;
-		return Objects.equals(color, other.color) && Objects.equals(email, other.email) && id == other.id
+		Employer other = (Employer) obj;
+		return Objects.equals(login, other.login) && Objects.equals(age, other.age) && id == other.id
 				&& Objects.equals(name, other.name);
 	}
-	
-	
-	
-	
 }
