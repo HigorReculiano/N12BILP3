@@ -3,6 +3,7 @@ import { CompanyService } from '../services/company.service';
 import { UserService } from '../services/user.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { SuccessAlertDialog } from '../../components/success-alert.component';
 
 
 export interface userEdit { id: number, name: string, age: number, role: string; company: string }
@@ -31,6 +32,7 @@ export class CompanyComponent implements OnInit {
     try {
       await this.userService.deleteUser(idUser);
       this.loadPage();
+      this.dialog.open(SuccessAlertDialog);
     } catch (erro) {
       console.log(erro);
     }

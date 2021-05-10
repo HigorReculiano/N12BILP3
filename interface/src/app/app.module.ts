@@ -18,6 +18,8 @@ import { UserService } from './views/services/user.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CompanyService } from './views/services/company.service';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SuccessAlertDialog } from './components/success-alert.component';
+
 
 
 @NgModule({
@@ -27,7 +29,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     CompanyComponent,
     HomeComponent,
     DashboardComponent,
-    EditUser
+    EditUser,
+    SuccessAlertDialog
   ],
   imports: [
     BrowserModule,
