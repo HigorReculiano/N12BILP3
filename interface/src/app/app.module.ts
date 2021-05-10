@@ -19,6 +19,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CompanyService } from './views/services/company.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SuccessAlertDialog } from './components/success-alert.component';
+import { ChartsModule } from 'ng2-charts';
+import { DashboardService } from './views/services/dashboard.service';
 
 
 
@@ -45,9 +47,10 @@ import { SuccessAlertDialog } from './components/success-alert.component';
     HttpClientModule,
     MatIconModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    ChartsModule
   ],
-  providers: [UserService, CompanyService],
+  providers: [UserService, CompanyService, DashboardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

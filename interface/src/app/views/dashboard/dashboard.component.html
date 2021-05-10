@@ -1,1 +1,16 @@
-<p>dashboard works!</p>
+<body class="page">
+  <div class="headerCompany">
+    <H1>DASHBOARD FUNCIONARIOS POR EMPRESA</H1>
+    <button mat-raised-button color="primary" (click)="navigate('')" class="buttonNavigate"><mat-icon>home</mat-icon></button>
+  </div>
+  <div class="dashboard" *ngIf="isDataAvailable">
+    <canvas baseChart
+      [data]="pieChartData"
+      [labels]="pieChartLabels"
+      [chartType]="pieChartType"
+      [options]="pieChartOptions"
+      [plugins]="pieChartPlugins"
+      [legend]="pieChartLegend">
+    </canvas>
+  </div>
+</body>
