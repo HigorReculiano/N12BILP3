@@ -16,27 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import ec.ftt.dao.CompanyDao;
-import ec.ftt.dao.RoleDao;
-import ec.ftt.model.Company;
-import ec.ftt.model.Employer;
-import ec.ftt.model.Company;
 import ec.ftt.model.Company;
 import ec.ftt.util.Errors;
 import ec.ftt.util.Helper;
 import ec.ftt.util.Validator;
-
-/**
- * Servlet implementation class companyApi
- * 
- * CRUD -
- * 
- */
-
-// TODO: PROJETO: CRIAR CRUD WEB + GRÁFICO PARA MAIS UMA TABELA COM MAIS CAMPOS PARA N1 2B
-// TODO: PROJETO: PROJETO INDIVIDUAL OU NO MÁXIMO EM DUPLAS (EM DUPLAS 2 TABELAS)
-// TODO: PROJETO: JavaScript Valina - CRUD em uma página - company "fetch"
-// TODO: PROJETO: Gerar gráfico com "Chart.js" https://www.chartjs.org/
-// TODO: PROJETO: Trabalhar bem mensagens de erro da WEB API com try catch
 
 @WebServlet("/company")
 public class CompanyApi extends HttpServlet {
