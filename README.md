@@ -4,14 +4,14 @@
   </a>
 </h2>
 
-<p align="center"> Projeto realizado para atender aos requisitos da N1 do segundo bimestre da disciplina de Linguagem de Programção 3</p>
+<p align="center"> Projeto realizado para atender aos requisitos da N1 do segundo bimestre da disciplina de Linguagem de Programação 3</p>
 
 # Interface
 
 ## Rodando o frontend :scroll:
 
 - Execute **`npm ci`** dentro da pasta **<a href="./interface">interface</a>** para isntalar as dependências
-- E para rodar o frontend **`npm run start`**
+- E para rodar o frontend **`npm run start`** após buildar, a interface é acessada em <a href="http://localhost:4200">http://localhost:4200</a>
 # API 
 ## Rodando o Banco de Dados :wrench:
 
